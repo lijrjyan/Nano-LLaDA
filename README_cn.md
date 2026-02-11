@@ -29,7 +29,7 @@ flowchart TD
       C2[Multi-Head Attention + RoPE]
       C3[Residual Add]
       C4[RMSNorm]
-      C5[SwiGLU MLP\n(gate_proj/up_proj/down_proj)]
+      C5[SwiGLU MLP (gate_proj/up_proj/down_proj)]
       C6[Residual Add]
       C1 --> C2 --> C3 --> C4 --> C5 --> C6
     end
@@ -40,11 +40,11 @@ flowchart TD
     E --> F1[AR Branch (MiniMind)]
     E --> F2[LLaDA Branch (Diffusion)]
 
-    F1 --> G1[Causal Attention\nNext-token CE Loss]
+    F1 --> G1[Causal Attention + Next-token CE Loss]
     F1 --> H1[Autoregressive Decoding]
 
     F2 --> G2[Non-causal / Masked Denoising Loss]
-    F2 --> H2[Iterative Unmask Decoding\n(confidence/top-k/cap)]
+    F2 --> H2[Iterative Unmask Decoding (confidence/top-k/cap)]
 ```
 
 ## 环境准备
