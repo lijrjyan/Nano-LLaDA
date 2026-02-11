@@ -17,6 +17,36 @@
 
 借用 `minimind` 的模型搭建、数据集与 tokenizer 作为基础配置，先完成一个自回归模型的预训练；随后参考 `LLaDA 2.0` 的训练技巧，搭建一个参数规模与 AR 模型一致的 LLaDA 模型，并加载预训练得到的 AR 权重进行初始化，最后开展后续 SFT 训练与评测。
 
+## 共用架构图（AR + LLaDA）
+
+```mermaid
+flowchart TD
+    A[Tokenizer / Input IDs] --> B[Token Embedding]
+    B --> C[N x Transformer Block]
+
+    subgraph C [Shared Transformer Backbone]
+      C1[RMSNorm]
+      C2[Multi-Head Attention + RoPE]
+      C3[Residual Add]
+      C4[RMSNorm]
+      C5[SwiGLU MLP\n(gate_proj/up_proj/down_proj)]
+      C6[Residual Add]
+      C1 --> C2 --> C3 --> C4 --> C5 --> C6
+    end
+
+    C --> D[Final RMSNorm]
+    D --> E[LM Head (Linear to Vocab Logits)]
+
+    E --> F1[AR Branch (MiniMind)]
+    E --> F2[LLaDA Branch (Diffusion)]
+
+    F1 --> G1[Causal Attention\nNext-token CE Loss]
+    F1 --> H1[Autoregressive Decoding]
+
+    F2 --> G2[Non-causal / Masked Denoising Loss]
+    F2 --> H2[Iterative Unmask Decoding\n(confidence/top-k/cap)]
+```
+
 ## 环境准备
 
 ```bash

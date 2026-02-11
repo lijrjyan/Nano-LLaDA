@@ -19,6 +19,36 @@ For the Chinese version of this document, see `README_cn.md`.
 
 We reuse `minimind` for base model construction, dataset format, and tokenizer. We first pretrain an autoregressive model, then build a parameter-matched LLaDA model inspired by LLaDA 2.0 training techniques, initialize it from AR pretrained weights, and continue with SFT and evaluation.
 
+## Shared Architecture (AR + LLaDA)
+
+```mermaid
+flowchart TD
+    A[Tokenizer / Input IDs] --> B[Token Embedding]
+    B --> C[N x Transformer Block]
+
+    subgraph C [Shared Transformer Backbone]
+      C1[RMSNorm]
+      C2[Multi-Head Attention + RoPE]
+      C3[Residual Add]
+      C4[RMSNorm]
+      C5[SwiGLU MLP\n(gate_proj/up_proj/down_proj)]
+      C6[Residual Add]
+      C1 --> C2 --> C3 --> C4 --> C5 --> C6
+    end
+
+    C --> D[Final RMSNorm]
+    D --> E[LM Head (Linear to Vocab Logits)]
+
+    E --> F1[AR Branch (MiniMind)]
+    E --> F2[LLaDA Branch (Diffusion)]
+
+    F1 --> G1[Causal Attention\nNext-token CE Loss]
+    F1 --> H1[Autoregressive Decoding]
+
+    F2 --> G2[Non-causal / Masked Denoising Loss]
+    F2 --> H2[Iterative Unmask Decoding\n(confidence/top-k/cap)]
+```
+
 ## Environment Setup
 
 ```bash
