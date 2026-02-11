@@ -1,32 +1,30 @@
 # nano-llada
 
-`nano-llada` is a lightweight discrete diffusion language model project. The current release is **v0.1.0** with about **30M** parameters. It builds on open-source `minimind` and `tiny-diffusion`, and provides a full AR + Diffusion pipeline for pretraining, SFT, and evaluation.
+`nano-llada` 是一个轻量级离散扩散语言模型实验项目。当前版本为 **v0.1.0**，参数规模约 **30M**，在参考开源 `minimind` 与 `tiny-diffusion` 的基础上，实现了 AR 与 Diffusion 双路线的训练、SFT 与评测流程。
 
-For the Chinese version of this document, see `README_cn.md`.
+## 项目状态
 
-## Project Status
+- 当前版本：`v0.1.0`
+- 参数规模：`~30M`
+- 当前能力：完成 LLaDA 1.0 思路的工程化初步复现
+- 进展：经过 SFT 后，`nano-llada` 已初步具备回答问题的能力；当前仍在继续训练与优化，以获得更好的效果。
+- 说明：当前实现尚未对 LLaDA 1.0 原文报告中的技术细节做到完全 1:1 复现，相关模块仍在持续修改与迭代中。
+- 训练路线：
+  - AR（MiniMind-style Causal LM）
+  - Diffusion（LLaDA-style masked denoising）
 
-- Current version: `v0.1.0`
-- Parameter scale: `~30M`
-- Current capability: initial engineering reproduction of the LLaDA 1.0 idea
-- Progress: after SFT, `nano-llada` has gained basic question-answering ability; training and tuning are still ongoing for better results.
-- Note: this implementation is not yet a strict 1:1 reproduction of every technical detail from the original LLaDA 1.0 report. We are continuously refining components.
-- Training tracks:
-  - AR (MiniMind-style causal LM)
-  - Diffusion (LLaDA-style masked denoising)
+## 总体思路
 
-## Overall Approach
+借用 `minimind` 的模型搭建、数据集与 tokenizer 作为基础配置，先完成一个自回归模型的预训练；随后参考 `LLaDA 2.0` 的训练技巧，搭建一个参数规模与 AR 模型一致的 LLaDA 模型，并加载预训练得到的 AR 权重进行初始化，最后开展后续 SFT 训练与评测。
 
-We reuse `minimind` for base model construction, dataset format, and tokenizer. We first pretrain an autoregressive model, then build a parameter-matched LLaDA model inspired by LLaDA 2.0 training techniques, initialize it from AR pretrained weights, and continue with SFT and evaluation.
-
-## Environment Setup
+## 环境准备
 
 ```bash
 pip install uv
 uv sync
 ```
 
-## Dataset Setup
+## 数据准备
 
 ```bash
 pip install modelscope
@@ -34,9 +32,9 @@ mkdir -p dataset && modelscope download --dataset gongjy/minimind_dataset pretra
 mkdir -p dataset && modelscope download --dataset gongjy/minimind_dataset sft_mini_512.jsonl --local_dir ./dataset
 ```
 
-## Training and Evaluation
+## 训练与评测流程
 
-### 1. AR Pretraining
+### 1. AR 预训练
 
 ```bash
 uv run python -m scripts.train.train_pretrain \
@@ -52,7 +50,7 @@ uv run python -m scripts.train.train_pretrain \
   --batch-size 96
 ```
 
-### 2. AR Evaluation
+### 2. AR 评测
 
 ```bash
 uv run python -m scripts.eval.eval_minimind \
@@ -62,7 +60,7 @@ uv run python -m scripts.eval.eval_minimind \
   --max-new-tokens 200
 ```
 
-### 3. nano-llada Pretraining
+### 3. nano-llada 预训练
 
 ```bash
 uv run python -m scripts.train.diffusion \
@@ -83,7 +81,7 @@ uv run python -m scripts.train.diffusion \
   --batch-size 96
 ```
 
-### 4. nano-llada Evaluation
+### 4. nano-llada 评测
 
 ```bash
 uv run python -m scripts.eval.eval_diffusion \
@@ -94,15 +92,15 @@ uv run python -m scripts.eval.eval_diffusion \
   --max-new-tokens 200
 ```
 
-## nano-llada Pretraining Loss (Chinese Dataset)
+## nano-llada 预训练 Loss（中文数据集）
 
-The following are diffusion pretraining loss curves on the Chinese dataset:
+以下为 `nano-llada` 在中文数据集上进行 Diffusion 预训练的 loss 曲线结果：
 
-- `25k` steps:
+- 训练 `25k` steps：
 
 ![nano-llada diffusion pretrain loss on Chinese dataset (25k steps)](./diffusion_from_ar_eq3_loss_cn_25k.png)
 
-- `40k` steps:
+- 训练 `40k` steps：
 
 ![nano-llada diffusion pretrain loss on Chinese dataset (40k steps)](./diffusion_from_ar_eq3_loss_cn_40k.png)
 
@@ -132,7 +130,7 @@ uv run python -m scripts.train.train_sft_diffusion \
   --epochs 3
 ```
 
-### 7. Single-Prompt SFT Evaluation
+### 7. SFT 单样本评测
 
 AR SFT:
 ```bash
@@ -144,7 +142,7 @@ uv run python -m scripts.eval.eval_sft_one_prompt \
   --max-new-tokens 128
 ```
 
-nano-llada SFT:
+Nano-llada SFT:
 ```bash
 uv run python -m scripts.eval.eval_sft_one_prompt \
   --prompt "你好，请介绍你自己。" \
@@ -154,7 +152,7 @@ uv run python -m scripts.eval.eval_sft_one_prompt \
   --max-new-tokens 128
 ```
 
-AR + nano-llada comparison:
+AR + Nano-llada 对比:
 ```bash
 uv run python -m scripts.eval.eval_sft_one_prompt \
   --prompt "你好，请介绍你自己。" \
@@ -165,22 +163,22 @@ uv run python -m scripts.eval.eval_sft_one_prompt \
   --max-new-tokens 128
 ```
 
-## Technical Report
+## 技术报告
 
-See `technical_report.md`.
+项目技术报告见：`technical_report.md`
 
-Positioning:
-- engineering implementation of `nano-llada (~30M)`
-- current version is `v0.1.0`
-- continuous iterative refinement in this repository
+核心定位：
+- `nano-llada (~30M)` 的工程化实现
+- 当前仅为 `v0.1.0`
+- 在本仓库持续精细化实现和迭代优化
 
-## Roadmap
+## 路线图
 
-1. Improve `v0.1.x` (training stability, decoding strategy, evaluation pipeline).  
-2. Reproduce `LLaDA 2.0`.  
-3. Reproduce `LLaDA 2.1`.  
-4. Train on English datasets and build a unified Chinese/English evaluation protocol.  
-5. Target stronger controllable generation quality and overall performance.
+1. 继续完善 `v0.1.x`：训练稳定性、解码策略、评测体系。  
+2. 复现 `LLaDA 2.0`。  
+3. 复现 `LLaDA 2.1`。  
+4. 在英文数据集上进行预训练与 SFT，并建立中英文统一评测。  
+5. 争取在可控生成质量与综合效果上达到更优结果。
 
 ## References
 
