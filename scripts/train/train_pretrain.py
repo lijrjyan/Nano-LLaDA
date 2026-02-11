@@ -10,9 +10,9 @@ from tokenizers import decoders, models, pre_tokenizers, trainers
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
-from lm_dataset import PretrainDataset
-from model_minimind import MiniMindConfig, MiniMindForCausalLM
-from trainer_utils import auto_device, extract_state_dict
+from core.lm_dataset import PretrainDataset
+from core.model_minimind import MiniMindConfig, MiniMindForCausalLM
+from core.trainer_utils import auto_device, extract_state_dict
 
 SPECIAL_TOKENS = ["<|endoftext|>", "<|im_start|>", "<|im_end|>"]
 

@@ -8,9 +8,9 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
-from model_minimind import MiniMindConfig, MiniMindForCausalLM
-from sft_dataset import SFTConversationDataset, StreamingSFTConversationDataset, collate_sft_ar
-from trainer_utils import auto_device, extract_state_dict, load_matching_weights, normalize_state_dict_keys
+from core.model_minimind import MiniMindConfig, MiniMindForCausalLM
+from core.sft_dataset import SFTConversationDataset, StreamingSFTConversationDataset, collate_sft_ar
+from core.trainer_utils import auto_device, extract_state_dict, load_matching_weights, normalize_state_dict_keys
 
 try:
     from tqdm.auto import tqdm

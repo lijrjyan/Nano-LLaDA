@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer
 
-from trainer_utils import auto_device
+from core.trainer_utils import auto_device
 
 
 def parse_args():

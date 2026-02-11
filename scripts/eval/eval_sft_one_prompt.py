@@ -5,17 +5,17 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer
 
-from eval_diffusion import (
+from scripts.eval.eval_diffusion import (
     DiffusionModel,
     extract_model_state_dict,
     generate as diffusion_generate,
     infer_hparams_from_state_dict,
 )
-from eval_minimind import (
+from scripts.eval.eval_minimind import (
     infer_config_from_state_dict,
 )
-from model_minimind import MiniMindForCausalLM
-from trainer_utils import auto_device, extract_state_dict as extract_minimind_state_dict, normalize_state_dict_keys
+from core.model_minimind import MiniMindForCausalLM
+from core.trainer_utils import auto_device, extract_state_dict as extract_minimind_state_dict, normalize_state_dict_keys
 
 
 def parse_args():

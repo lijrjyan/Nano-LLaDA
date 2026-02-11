@@ -8,6 +8,7 @@
 - 参数规模：`~30M`
 - 当前能力：完成 LLaDA 1.0 思路的工程化初步复现
 - 进展：经过 SFT 后，`nano-llada` 已初步具备回答问题的能力；当前仍在继续训练与优化，以获得更好的效果。
+- 说明：当前实现尚未对 LLaDA 1.0 原文报告中的技术细节做到完全 1:1 复现，相关模块仍在持续修改与迭代中。
 - 训练路线：
   - AR（MiniMind-style Causal LM）
   - Diffusion（LLaDA-style masked denoising）
@@ -36,7 +37,7 @@ mkdir -p dataset && modelscope download --dataset gongjy/minimind_dataset sft_mi
 ### 1. AR 预训练
 
 ```bash
-uv run train_pretrain.py \
+uv run python -m scripts.train.train_pretrain \
   --data ./dataset/pretrain_hq.jsonl \
   --jsonl-field text \
   --tokenizer-dir . \
@@ -52,7 +53,7 @@ uv run train_pretrain.py \
 ### 2. AR 评测
 
 ```bash
-uv run eval_minimind.py \
+uv run python -m scripts.eval.eval_minimind \
   --checkpoint weights/minimind_pretrain_state_dict.pt \
   --tokenizer-dir . \
   --prompt "请介绍你自己。" \
@@ -62,7 +63,7 @@ uv run eval_minimind.py \
 ### 3. Diffusion 预训练（LLaDA-style）
 
 ```bash
-uv run diffusion.py \
+uv run python -m scripts.train.diffusion \
   --train \
   --use-tokenizer \
   --tokenizer-dir . \
@@ -94,7 +95,7 @@ uv run diffusion.py \
 ### 4. Diffusion 评测
 
 ```bash
-uv run eval_diffusion.py \
+uv run python -m scripts.eval.eval_diffusion \
   --checkpoint weights/diffusion_no_v1.pt \
   --tokenizer-dir . \
   --seq-len 256 \
@@ -117,7 +118,7 @@ uv run eval_diffusion.py \
 ### 5. AR SFT
 
 ```bash
-uv run train_sft_minimind.py \
+uv run python -m scripts.train.train_sft_minimind \
   --data dataset/sft_mini_512.jsonl \
   --tokenizer-dir . \
   --load-from weights/minimind_pretrain_state_dict.pt \
@@ -130,7 +131,7 @@ uv run train_sft_minimind.py \
 ### 6. Diffusion SFT
 
 ```bash
-uv run train_sft_diffusion.py \
+uv run python -m scripts.train.train_sft_diffusion \
   --data dataset/sft_mini_512.jsonl \
   --tokenizer-dir . \
   --load-from weights/diffusion_from_ar_eq3_3g_en.pt \
@@ -144,7 +145,7 @@ uv run train_sft_diffusion.py \
 
 AR SFT:
 ```bash
-uv run eval_sft_one_prompt.py \
+uv run python -m scripts.eval.eval_sft_one_prompt \
   --prompt "你好，请介绍你自己。" \
   --tokenizer-dir . \
   --minimind-checkpoint weights/minimind_sft_state_dict.pt \
@@ -154,7 +155,7 @@ uv run eval_sft_one_prompt.py \
 
 Diffusion SFT:
 ```bash
-uv run eval_sft_one_prompt.py \
+uv run python -m scripts.eval.eval_sft_one_prompt \
   --prompt "你好，请介绍你自己。" \
   --tokenizer-dir . \
   --diffusion-checkpoint weights/diffusion_sft_state_dict.pt \
@@ -164,7 +165,7 @@ uv run eval_sft_one_prompt.py \
 
 AR + Diffusion 对比:
 ```bash
-uv run eval_sft_one_prompt.py \
+uv run python -m scripts.eval.eval_sft_one_prompt \
   --prompt "你好，请介绍你自己。" \
   --tokenizer-dir . \
   --minimind-checkpoint weights/minimind_sft_state_dict.pt \

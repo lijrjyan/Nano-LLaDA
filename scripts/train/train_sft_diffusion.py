@@ -9,9 +9,9 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
-from eval_diffusion import DiffusionModel
-from sft_dataset import SFTConversationDataset, StreamingSFTConversationDataset, collate_sft_diffusion
-from trainer_utils import auto_device, extract_state_dict, load_matching_weights, normalize_state_dict_keys
+from scripts.eval.eval_diffusion import DiffusionModel
+from core.sft_dataset import SFTConversationDataset, StreamingSFTConversationDataset, collate_sft_diffusion
+from core.trainer_utils import auto_device, extract_state_dict, load_matching_weights, normalize_state_dict_keys
 
 try:
     from tqdm.auto import tqdm

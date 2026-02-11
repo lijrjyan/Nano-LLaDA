@@ -25,7 +25,7 @@
 ### 3.1 AR Baseline (MiniMind-style)
 - 模型：Decoder-only Transformer，RoPE + RMSNorm，因果注意力。
 - 训练目标：next-token prediction（标准交叉熵）。
-- 流程：`train_pretrain.py` → `train_sft_minimind.py` → `eval_sft_one_prompt.py`。
+- 流程：`scripts/train/train_pretrain.py` → `scripts/train/train_sft_minimind.py` → `scripts/eval/eval_sft_one_prompt.py`。
 
 ### 3.2 Diffusion Model (LLaDA-style Approximation)
 - 模型骨干与 AR 结构对齐，便于权重迁移与公平对比。
@@ -34,7 +34,7 @@
   - mask schedule（如 `iid_t` / `wsd`）
   - mask token 注入
   - 多轮迭代解码（confidence threshold + top-k + decode budget）
-- 流程：`diffusion.py` / `train_sft_diffusion.py` → `eval_sft_one_prompt.py`。
+- 流程：`scripts/train/diffusion.py` / `scripts/train/train_sft_diffusion.py` → `scripts/eval/eval_sft_one_prompt.py`。
 
 ### 3.3 SFT Alignment
 - 数据按对话格式整理为 prompt/response。
@@ -43,11 +43,11 @@
 
 ## 4. Implementation
 - 主要脚本：
-  - `train_pretrain.py`: AR 预训练与 tokenizer 处理
-  - `diffusion.py`: Diffusion 预训练主流程
-  - `train_sft_minimind.py`: AR SFT
-  - `train_sft_diffusion.py`: Diffusion SFT
-  - `eval_sft_one_prompt.py`: 单 prompt 双模型对比（质量+速度）
+  - `scripts/train/train_pretrain.py`: AR 预训练与 tokenizer 处理
+  - `scripts/train/diffusion.py`: Diffusion 预训练主流程
+  - `scripts/train/train_sft_minimind.py`: AR SFT
+  - `scripts/train/train_sft_diffusion.py`: Diffusion SFT
+  - `scripts/eval/eval_sft_one_prompt.py`: 单 prompt 双模型对比（质量+速度）
 - 工程特性：
   - 支持 checkpoint 恢复与权重匹配加载
   - 支持 CUDA/MPS/CPU 自动选择

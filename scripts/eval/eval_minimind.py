@@ -7,9 +7,9 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
-from lm_dataset import PretrainDataset
-from model_minimind import MiniMindConfig, MiniMindForCausalLM
-from trainer_utils import auto_device, extract_state_dict, normalize_state_dict_keys
+from core.lm_dataset import PretrainDataset
+from core.model_minimind import MiniMindConfig, MiniMindForCausalLM
+from core.trainer_utils import auto_device, extract_state_dict, normalize_state_dict_keys
 
 
 def parse_args():
