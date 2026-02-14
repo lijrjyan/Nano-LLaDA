@@ -1,8 +1,8 @@
-# Nano-LLaDA
-
-[English](README.md) | **中文**
-
 ![Nano-LLaDA logo](./logo.png)
+
+<p align="center">
+  <a href="README.md">English</a> | <strong>中文</strong>
+</p>
 
 `Nano-LLaDA` 是一个轻量级离散扩散语言模型实验项目。当前版本为 **v0.1.0**，参数规模约 **30M**，在参考开源 `minimind` 与 `tiny-diffusion` 的基础上，实现了 AR 与 Diffusion 双路线的训练、SFT 与评测流程。
 

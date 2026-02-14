@@ -1,8 +1,8 @@
-# Nano-LLaDA
-
-**English** | [中文](README_cn.md)
-
 ![Nano-LLaDA logo](./logo.png)
+
+<p align="center">
+  <strong>English</strong> | <a href="README_cn.md">中文</a>
+</p>
 
 `Nano-LLaDA` is a lightweight discrete diffusion language model project. The current release is **v0.1.0** with about **30M** parameters. It builds on open-source `minimind` and `tiny-diffusion`, and provides a full AR + Diffusion pipeline for pretraining, SFT, and evaluation.
 
